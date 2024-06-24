@@ -1,0 +1,61 @@
+db_course_conversions=# \dt
+                List of relations
+ Schema |        Name        | Type  |   Owner    
+--------+--------------------+-------+------------
+ public | student_engagement | table | maritzabel
+ public | student_info       | table | maritzabel
+ public | student_purchases  | table | maritzabel
+(3 rows)
+
+db_course_conversions=# \d student_info
+                Table "public.student_info"
+     Column      |  Type   | Collation | Nullable | Default 
+-----------------+---------+-----------+----------+---------
+ student_id      | integer |           | not null | 
+ date_registered | date    |           |          | 
+Indexes:
+    "student_info_pkey" PRIMARY KEY, btree (student_id)
+
+db_course_conversions=# \d student_engagement
+            Table "public.student_engagement"
+    Column    |  Type   | Collation | Nullable | Default 
+--------------+---------+-----------+----------+---------
+ student_id   | integer |           |          | 
+ date_watched | date    |           |          | 
+
+
+db_course_conversions=# \d student_purchases
+             Table "public.student_purchases"
+     Column     |  Type   | Collation | Nullable | Default 
+----------------+---------+-----------+----------+---------
+ purchase_id    | integer |           | not null | 
+ student_id     | integer |           |          | 
+ date_purchased | date    |           |          | 
+Indexes:
+    "student_purchases_pkey" PRIMARY KEY, btree (purchase_id)
+
+
+
+
+student_id | date_registered | first_date_watched | first_date_purchased | date_diff_reg_watch | date_diff_watch_purch 
+------------+-----------------+--------------------+----------------------+---------------------+-----------------------
+     270017 | 2022-04-08      | 2022-04-08         |                      |                   0 |                      
+     274284 | 2022-05-18      | 2022-05-18         |                      |                   0 |                      
+     269559 | 2022-04-04      | 2022-04-04         | 2023-05-16           |                   0 |                   407
+     283661 | 2022-08-03      | 2022-08-03         |                      |                   0 |                      
+     260499 | 2022-01-15      | 2022-02-03         |                      |                  19 |                      
+     274685 | 2022-05-22      | 2022-05-22         |                      |                   0 |                      
+     268681 | 2022-03-27      | 2022-03-27         |                      |                   0 |                      
+     289094 | 2022-09-01      | 2022-09-01         |                      |                   0 |                      
+     271520 | 2022-04-21      | 2022-04-21         |                      |                   0 |                      
+     284388 | 2022-08-08      | 2022-08-08         |                      |                   0 |                      
+     264645 | 2022-02-22      | 2022-02-22         |                      |                   0 |                      
+     259766 | 2022-01-09      | 2022-01-09         |                      |                   0 |                      
+     268536 | 2022-03-25      | 2022-04-09         |                      |                  15 |                      
+     266283 | 2022-03-07      | 2022-03-07         |                      |                   0 |                      
+     285679 | 2022-08-15      | 2022-08-16         |                      |                   1 |                      
+     280651 | 2022-07-07      | 2022-07-11         |                      |                   4 |                      
+     296911 | 2022-10-30      | 2022-10-30         | 2022-10-30           |                   0 |                     0
+     277491 | 2022-06-12      | 2022-06-12         |                      |                   0 |                      
+     289235 | 2022-09-02      | 2022-09-03         |                      |                   1 |                      
+     256838 | 2021-12-13      | 2021-12-13         | 2022-01-21           |                   0 |                    39
