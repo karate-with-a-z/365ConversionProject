@@ -1,81 +1,33 @@
--- student_id – (int) the unique identification of a student
--- date_registered – (date) the date on which the student registered on the 365 platform
--- first_date_watched – (date) the date of the first engagement
--- first_date_purchased – (date) the date of first-time purchase (NULL if they have no purchases)
--- date_diff_reg_watch – (int) the difference in days between the registration date and the date of first-time engagement
--- date_diff_watch_purch – (int) the difference in days between the date of first-time engagement and the date of first-time purchase (NULL if they have no purchases)
 
--- Original Query with 20,255 records
+-- Original Query with 20,255 records. 
+-- Return student ID, date which students registered on 365
+-- first date student engaged with video, day which student made 365 purchase, the difference between
+-- registration date and watch date, and the difference between first engagement day and 365 purchase
 
+SELECT 
+    i.student_id,
+    i.date_registered,
+    MIN(e.date_watched) AS first_date_watched,
+    MIN(p.date_purchased) as first_date_purchased,
+    (MIN(e.date_watched) - i.date_registered) as date_diff_reg_watch,
+    (MIN(p.date_purchased) - MIN(e.date_watched)) as date_diff_watch_purch
+FROM 
+    student_info i
+    INNER JOIN student_engagement e ON i.student_id = e.student_id
+    LEFT JOIN student_purchases p ON  i.student_id = p.student_id
+GROUP BY
+    i.student_id
+HAVING
+    MIN(e.date_watched) <= MIN(p.date_purchased) OR MIN(p.date_purchased) IS NULL;
 
--- SELECT 
---     i.student_id,
---     i.date_registered,
---     MIN(e.date_watched) AS first_date_watched,
---     MIN(p.date_purchased) as first_date_purchased,
---     (MIN(e.date_watched) - i.date_registered) as date_diff_reg_watch,
---     (MIN(p.date_purchased) - MIN(e.date_watched)) as date_diff_watch_purch
--- FROM 
---     student_info i
---     INNER JOIN student_engagement e ON i.student_id = e.student_id
---     LEFT JOIN student_purchases p ON  i.student_id = p.student_id
--- GROUP BY
---     i.student_id
--- HAVING
---     MIN(e.date_watched) <= MIN(p.date_purchased) OR MIN(p.date_purchased) IS NULL;
-
--- -- Metrics Query
--- SELECT 
---     ROUND((COUNT(CASE WHEN date_diff_watch_purch >=0 THEN student_id END)*1.0/COUNT(*))*100,2) AS conversion_rate,
---     ROUND(SUM(date_diff_reg_watch)*1.0/COUNT(CASE WHEN date_diff_reg_watch >=0 THEN student_id END), 2) AS av_reg_watch_days,
---     ROUND(SUM(date_diff_watch_purch)*1.0/COUNT(CASE WHEN date_diff_watch_purch >=0 THEN student_id END), 2) AS av_watch_purch_days
--- FROM
---     (SELECT 
---         i.student_id,
---         i.date_registered,
---         MIN(e.date_watched) AS first_date_watched,
---         MIN(p.date_purchased) as first_date_purchased,
---         (MIN(e.date_watched) - i.date_registered) as date_diff_reg_watch,
---         (MIN(p.date_purchased) - MIN(e.date_watched)) as date_diff_watch_purch
---     FROM 
---         student_info i
---         INNER JOIN student_engagement e ON i.student_id = e.student_id
---         LEFT JOIN student_purchases p ON  i.student_id = p.student_id
---     GROUP BY
---         i.student_id
---     HAVING
---         MIN(e.date_watched) <= MIN(p.date_purchased) OR MIN(p.date_purchased) IS NULL
---         ) a; 
-
-
-
--- -- Query to export table to CSV file
--- COPY(
---     SELECT 
---     ROUND((COUNT(CASE WHEN date_diff_watch_purch >=0 THEN student_id END)*1.0/COUNT(*))*100,2) AS conversion_rate,
---     ROUND(SUM(date_diff_reg_watch)*1.0/COUNT(CASE WHEN date_diff_reg_watch >=0 THEN student_id END), 2) AS av_reg_watch_days,
---     ROUND(SUM(date_diff_watch_purch)*1.0/COUNT(CASE WHEN date_diff_watch_purch >=0 THEN student_id END), 2) AS av_watch_purch_days
--- FROM
---     (SELECT 
---         i.student_id,
---         i.date_registered,
---         MIN(e.date_watched) AS first_date_watched,
---         MIN(p.date_purchased) as first_date_purchased,
---         (MIN(e.date_watched) - i.date_registered) as date_diff_reg_watch,
---         (MIN(p.date_purchased) - MIN(e.date_watched)) as date_diff_watch_purch
---     FROM 
---         student_info i
---         INNER JOIN student_engagement e ON i.student_id = e.student_id
---         LEFT JOIN student_purchases p ON  i.student_id = p.student_id
---     GROUP BY
---         i.student_id
---     HAVING
---         MIN(e.date_watched) <= MIN(p.date_purchased) OR MIN(p.date_purchased) IS NULL
---         ) a
--- ) TO '/Users/maritzabel/Documents/DataAnalyticsProjects/Project1/query1results.csv' With CSV DELIMITER ',' HEADER;
-
-COPY(
-    SELECT 
+-- Metrics Query: Find converson rate, average days between registration and watching video, 
+-- and average days between watching video and making a purchase
+SELECT 
+    ROUND((COUNT(CASE WHEN date_diff_watch_purch >=0 THEN student_id END)*1.0/COUNT(*))*100,2) AS conversion_rate,
+    ROUND(SUM(date_diff_reg_watch)*1.0/COUNT(CASE WHEN date_diff_reg_watch >=0 THEN student_id END), 2) AS av_reg_watch_days,
+    ROUND(SUM(date_diff_watch_purch)*1.0/COUNT(CASE WHEN date_diff_watch_purch >=0 THEN student_id END), 2) AS av_watch_purch_days
+FROM
+    (SELECT 
         i.student_id,
         i.date_registered,
         MIN(e.date_watched) AS first_date_watched,
@@ -90,29 +42,28 @@ COPY(
         i.student_id
     HAVING
         MIN(e.date_watched) <= MIN(p.date_purchased) OR MIN(p.date_purchased) IS NULL
+        ) a; 
 
-) TO '/Users/maritzabel/Documents/DataAnalyticsProjects/stdntConversionProject/query1results.csv' With CSV DELIMITER ',' HEADER;
 
 
--- Same query but using AGE() to find date difference
-
--- SELECT 
--- i.student_id,
--- i.date_registered,
--- MIN(e.date_watched) AS first_date_watched,
--- MIN(p.date_purchased) as first_date_purchased,
--- AGE(e.date_watched, i.date_registered) as date_diff_reg_watch,
--- AGE(p.date_purchased, MIN(e.date_watched)) as date_diff_watch_purch
--- FROM 
--- student_engagement e 
--- JOIN student_info i ON i.student_id = e.student_id
--- JOIN student_purchases p ON  p.student_id = i.student_id
--- GROUP BY
--- i.student_id,
--- e.date_watched,
--- p.date_purchased
--- HAVING
--- MIN(e.date_watched) <= MIN(p.date_purchased);
+-- Same query but using AGE() to find date difference. AGE function does not work for this analysis; not able to perform mean, median, mode from age data. 
+SELECT 
+i.student_id,
+i.date_registered,
+MIN(e.date_watched) AS first_date_watched,
+MIN(p.date_purchased) as first_date_purchased,
+AGE(e.date_watched, i.date_registered) as date_diff_reg_watch,
+AGE(p.date_purchased, MIN(e.date_watched)) as date_diff_watch_purch
+FROM 
+student_engagement e 
+JOIN student_info i ON i.student_id = e.student_id
+JOIN student_purchases p ON  p.student_id = i.student_id
+GROUP BY
+i.student_id,
+e.date_watched,
+p.date_purchased
+HAVING
+MIN(e.date_watched) <= MIN(p.date_purchased);
 
 
 
