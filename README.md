@@ -201,4 +201,4 @@ python analyze_data.py
 
 ## Project Instructions
 
-For further details and project instructions, refer to the [project instructions link](https://learn.365datascience.com/projects/calculating-free-to-paid-conversion-rate-with-sql/).
+For further details and project instructions, refer to the [project instructions link](https://365datascience.com/projects/calculating-free-to-paid-conversion-rate-with-sql/?utm_medium=affiliate&utm_campaign=11148&utm_source=Bing%20Rebates%20by%20Microsoft&irgwc=1).
