@@ -8,7 +8,7 @@ This project aims to analyze student engagement and purchase behaviors for the 3
 
 ### 1. Database Setup
 
-To set up the database, execute the SQL script provided in the db_course_conversions.sql file in your PostgreSQL environment. This will create the necessary tables and sample data.
+To set up the database, execute the SQL script provided in the `db_course_conversions.sql` file in your PostgreSQL environment. This will create the necessary tables and sample data.
 
 ### 2. PostgreSQL Queries
 
