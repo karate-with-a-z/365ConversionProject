@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project aims to analyze student engagement and purchase behaviors using PostgreSQL queries and a Python script. The PostgreSQL queries extract data about student interactions and calculate key metrics, while the Python script performs further analysis and visualization.
+This project aims to analyze student engagement and purchase behaviors for the 365 DataScience platform using PostgreSQL queries and a Python script. The PostgreSQL queries extract data about student interactions and calculate key metrics, while the Python script performs further analysis and visualization.
 
 ## Setup Instructions
 
